@@ -1,16 +1,30 @@
-version: '3.8'
-
 services:
-  psql:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+  api:
+    container_name: api
+    build:
+      context: .
+      target: dev
+    command: ["air"]
     ports:
-      - "${DB_PORT}:5432"
+      - "8080:8080"
     volumes:
-      - psql_volume:/var/lib/postgresql/data
+      - .:/app
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+
+  postgres:
+    container_name: postgres
+    image: ankane/pgvector
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      
 
 volumes:
-  psql_volume:
+  pgdata:

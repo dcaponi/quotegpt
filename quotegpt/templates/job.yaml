@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-db-seed-job
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation
+  labels:
+    app: {{ .Release.Name }}-db-seed
+spec:
+  template:
+    spec:
+      containers:
+        - name: db-seeder
+          imagePullPolicy: IfNotPresent
+          image: {{ .Values.seed.image }}
+          envFrom:
+            - secretRef:
+                name: postgres-env
+      restartPolicy: OnFailure
+  backoffLimit: {{ .Values.seed.backoffLimit }}

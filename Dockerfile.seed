@@ -1,0 +1,23 @@
+# Dockerfile.seed
+FROM golang:1.23-alpine AS seeder
+
+WORKDIR /app
+
+# Copy go.mod and go.sum and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the seed binary
+RUN go build -o /seed ./cmd/mx/seed.go
+
+# Runtime image
+FROM golang:1.23-alpine
+
+# Copy the seed binary
+COPY --from=seeder /seed /seed
+
+# Set the entry point
+ENTRYPOINT ["/seed"]

@@ -1,0 +1,33 @@
+api:
+  image: quotegpt:latest
+  replicas: 1
+  env:
+    POSTGRES_HOST: db
+    POSTGRES_PORT: "5432"
+    PORT: 8080
+  port: 8080
+
+postgres:
+  image: ankane/pgvector
+  port: 5432
+  storageSize: 2Gi
+
+ingress:
+  enabled: true
+  host: localhost
+
+serviceAccount:
+  create: false
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  # Optionally for memory-based scaling
+  targetMemoryUtilizationPercentage: 75
+
+seed:
+  image: quotegpt-seeder:latest
+  databaseUrl: "postgres://user:password@postgres:5432/dbname"
+  backoffLimit: 3

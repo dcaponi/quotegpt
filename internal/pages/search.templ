@@ -1,0 +1,82 @@
+package pages
+
+templ SearchPage() {
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+
+      input[type="text"] {
+        padding: 8px;
+        width: 300px;
+        margin-right: 10px;
+      }
+
+      button {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Search</h1>
+    <form id="searchForm" onsubmit="handleSearch(event)">
+      <input type="text" id="queryInput" name="query" placeholder="Enter your search term">
+      <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+
+  </body>
+
+  <script>
+    async function handleSearch(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const query = document.getElementById("queryInput").value;
+      const resultsContainer = document.getElementById("results");
+
+      try {
+        const response = await fetch(`/quotes?query=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const quotes = await response.json();
+
+        // Clear previous results
+        resultsContainer.innerHTML = "";
+        // Display new results
+        if (quotes.length === 0) {
+          resultsContainer.innerHTML = "<p>No results found.</p>";
+        } else {
+          quotes.forEach(quote => {
+            const div = document.createElement("div");
+            div.className = "quote";
+            div.innerHTML = `<blockquote><p>${quote[2]}</p><p>-- ${quote[1]}</p></blockquote> <hr/>`;
+            resultsContainer.appendChild(div);
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching quotes:", error);
+        resultsContainer.innerHTML = "<p>Error fetching quotes. Please try again.</p>";
+      }
+    }
+  </script>
+  </html>
+}

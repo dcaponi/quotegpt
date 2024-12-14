@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  annotations:
+    "helm.sh/resource-policy": keep  # Prevent Helm from deleting the PVC
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{.Values.postgres.storageSize}}
