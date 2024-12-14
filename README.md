@@ -664,10 +664,15 @@ or expose the services
 
 ```sh
 kubectl expose service prometheus-kube-prometheus-prometheus --type=NodePort --target-port=9090 --name=prometheus-node-port-service
-kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana-node-port-service
+kubectl expose service grafana --namespace monitoring --type=NodePort --target-port=3000 --name=grafana-ext
 ```
 
 Open a tab in the browser and go to localhost:9090 - this is prometheus's dashboard
 
 Open another and go to localhost:3000 - this is grafana. log in with the credentials obtained a few steps ago.
 
+In Grafana Go to connection > add new connection and add a new prometheus connection.
+
+For url, plug in `http://<cluster-ip-of-prometheus-server-service>:9090`
+
+write a prometheus query for the dashboard to group our http requests and latency by endpoint
