@@ -41,7 +41,7 @@ include_ext = ["go", "tpl", "tmpl", "templ", "html"] # Want to build when .templ
 
 Update docker-compose to run the app and database locally. Using docker-compose for local development is generally my go to since its easy to set up and a bunch of networking context isn't required to troubleshoot any issues with the service.
 
-We're going to use `akane/pgvector` as our postgres image. Andrew Kane has done a lot of great work with vector databases in Postgres and this image is basically the postgres image with the `pgvector` extension ready to go. We'll also pull our environment variables from a .env file so everything is managed in one place for local dev. We'll get into secrets later.
+We're going to use `image: ankane/pgvector` as our postgres image. Andrew Kane has done a lot of great work with vector databases in Postgres and this image is basically the postgres image with the `pgvector` extension ready to go. We'll also pull our environment variables from a .env file so everything is managed in one place for local dev. We'll get into secrets later.
 
 Speaking of databases, `go-blueprint` tries to set up some database initialization code. We won't be using that since we'll be using [sqlc](https://sqlc.dev) to generate our database code. Delete the health endpoint in `server/server.go` `server/routes.go` and the `database/database.go` file entirely.
 
